@@ -1,0 +1,31 @@
+.popular {
+  width: 80%; /* occupe 75-80% de la page */
+  margin: 0 auto; /* centre horizontalement */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px; /* espace entre le titre et les items */
+  padding-bottom: 50px; /* marge au dessous */
+}
+
+.popular h1 {
+  color: #171717;
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.popular hr {
+  width: 200px;
+  height: 6px;
+  border-radius: 10px;
+  background: #252525;
+  border: none;
+}
+
+.popular-item {
+  margin-top: 50px;
+  display: flex;
+  flex-wrap: wrap; /* retour à la ligne si trop d'items */
+  justify-content: center; /* centre horizontalement tous les items */
+  gap: 30px; /* espace entre les items */
+}

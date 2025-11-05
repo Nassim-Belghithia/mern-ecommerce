@@ -1,0 +1,116 @@
+.hero {
+  width: 100%;
+  height: 90vh;
+  background-color:#fff0f3; /* blanc rosé */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8%;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* === LEFT SIDE === */
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.hero-left h2 {
+  color: #000000;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+.hero-title h1 {
+  font-size: 78px;
+  font-weight: 550;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: #111;
+  margin: 0;
+   mix-blend-mode: multiply;
+}
+
+.hand-icon {
+  width: 60px;
+  height: 60px;
+}
+
+.hero-title p {
+  font-size: 78px;
+  font-weight: 550;
+  color: #111;
+  margin: 0;
+  line-height: 1.1;
+}
+
+/* === BUTTON === */
+.hero-button {
+  margin-top: 25px;
+  background-color: #e63946;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+
+.hero-button:hover {
+  background-color: #c92d39;
+}
+
+.arrow-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* === RIGHT SIDE === */
+.hero-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-img {
+  width: 400px;
+  height: auto;
+  object-fit: cover;
+   mix-blend-mode: multiply;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 900px) {
+  .hero {
+    flex-direction: column;
+    height: auto;
+    text-align: center;
+    padding: 40px 5%;
+  }
+
+  .hero-right {
+    margin-top: 40px;
+  }
+
+  .hero-title h1,
+  .hero-title p {
+    font-size: 50px;
+  }
+
+  .hand-icon {
+    width: 45px;
+    height: 45px;
+  }
+}

@@ -1,0 +1,130 @@
+.navbar {
+  width: 95%;
+  height: 70px;
+  background-color: #fff;
+  display: flex; /* organiser les element d'un  component de gauche a droit */
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 10;
+  font-family: "Poppins", sans-serif;
+  
+}
+
+/* === LEFT === */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bag-icon {
+  width: 35px;
+  height: 35px;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #111;
+}
+
+/* === CENTER MENU === */
+/* === CENTER MENU === */
+.navbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.menu {
+  display: flex;
+  list-style: none;
+  gap: 40px;
+  margin: 0;
+  padding: 0;
+}
+
+/* Style de chaque item */
+.menu-item {
+  cursor: pointer;
+  font-weight: 500;
+  color: #333;
+  position: relative;
+  transition: color 0.3s ease;
+  padding-bottom: 5px;
+}
+
+.menu-item:hover {
+  color: #e63946;
+}
+
+/* --- ligne rouge --- */
+.menu-item::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background-color: #e63946;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* Active = ligne rouge visible */
+.menu-item.active::after {
+  width: 100%;
+}
+
+
+/* === RIGHT === */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.login-btn {
+  background-color: #111;
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+  background-color: #e63946;
+}
+
+.cart-container {
+  position: relative;
+}
+
+.cart-icon {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.cart-count {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background-color: #e63946;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
