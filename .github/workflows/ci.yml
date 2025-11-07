@@ -109,7 +109,8 @@ jobs:
         with:
            host: 20.199.16.13
            username: azureuser
-           key: ${{ secrets.VM_SSH_KEY }}
+           key_path: key.pem 
+           debug: true 
            script: |
              echo "✅ Connexion SSH réussie !"
              docker ps 
