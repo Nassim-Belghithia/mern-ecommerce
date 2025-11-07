@@ -86,3 +86,43 @@ jobs:
 
       - name: Push frontend Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/mern-frontend:latest
+  
+  deploy:
+    runs-on: ubuntu-latest
+    needs: docker
+    steps:
+      - name: SSH deploy to Azure VM
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.VM_IP }}
+          username: azureuser
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            echo "Pull latest Docker images"
+            docker pull ${{ secrets.DOCKER_USERNAME }}/mern-backend:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/mern-frontend:latest
+
+            echo "Stop and remove old containers if exist"
+            docker rm -f mern-backend mern-frontend || true
+
+            echo "Run backend container"
+            docker run -d --name mern-backend \
+              -p 5000:5000 \
+              -e DATABASE_URL='${{ secrets.DATABASE_URL }}' \
+              -e JWT_SECRET='${{ secrets.JWT_SECRET }}' \
+              -e PORT='${{ secrets.PORT }}' \
+              -e FRONTEND_URL='${{ secrets.FRONTEND_URL }}' \
+              -e OPEN_AI_ENDPOINT='${{ secrets.OPEN_AI_ENDPOINT }}' \
+              -e OPEN_AI_KEY='${{ secrets.OPEN_AI_KEY }}' \
+              -e SEARCH_ENDPOINT='${{ secrets.SEARCH_ENDPOINT }}' \
+              -e SEARCH_KEY='${{ secrets.SEARCH_KEY }}' \
+              -e INDEX_NAME='${{ secrets.INDEX_NAME }}' \
+              -e CHAT_MODEL='${{ secrets.CHAT_MODEL }}' \
+              -e EMBEDDING_MODEL='${{ secrets.EMBEDDING_MODEL }}' \
+               ${{ secrets.DOCKER_USERNAME }}/mern-backend:latest 
+
+
+            echo "Run frontend container"
+            docker run -d --name mern-frontend \
+              -p 3000:80 \
+              ${{ secrets.DOCKER_USERNAME }}/mern-frontend:latest 
