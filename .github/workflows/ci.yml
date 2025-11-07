@@ -91,19 +91,20 @@ jobs:
     runs-on: ubuntu-latest
     needs: docker
     steps:
-      - name: Check SSH key fingerprint
+      - name: Decode SSH key
         run: |
-          echo "${{ secrets.VM_SSH_KEY }}" > key_from_github.pem
-          chmod 600 key_from_github.pem
-          ssh-keygen -lf key_from_github.pem
+           echo "${{ secrets.VM_SSH_KEY_BASE64 }}" | base64 --decode > key.pem
+           chmod 600 key.pem
+
       - name: SSH deploy to Azure VM
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{ secrets.VM_HOST }}
+          host: 20.199.16.13
           username: azureuser
-          key: ${{ secrets.VM_SSH_KEY }}
+          key_path: key.pem
           debug: true  # 🔍 Ajoute cette ligne
           script: |
+            echo "✅ Connexion SSH réussie !"
             echo "Pull latest Docker images"
             docker pull ${{ secrets.DOCKER_USERNAME }}/mern-backend:latest
             docker pull ${{ secrets.DOCKER_USERNAME }}/mern-frontend:latest
