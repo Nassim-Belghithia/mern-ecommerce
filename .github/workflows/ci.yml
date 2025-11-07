@@ -110,6 +110,7 @@ jobs:
            host: 20.199.16.13
            username: azureuser
            key_path: key.pem 
+           port: 22  
            debug: true 
            script: |
              echo "✅ Connexion SSH réussie !"
