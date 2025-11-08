@@ -90,62 +90,37 @@ jobs:
         run: docker push ${{ secrets.DOCKER_USERNAME }}/mern-frontend:latest
   
   deploy:
+    name: Deploy to Azure AKS
     runs-on: ubuntu-latest
     needs: docker
+
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Set up Azure CLI
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          echo "🔹 Login to Azure"
+          az login --service-principal \
+            -u ${{ secrets.AZURE_CLIENT_ID }} \
+            -p ${{ secrets.AZURE_CLIENT_SECRET }} \
+            --tenant ${{ secrets.AZURE_TENANT_ID }}
 
-      - name: Write SSH key to file
-        run: |
-          echo "${{ secrets.VM_SSH_KEY}}" > key.pem
-          chmod 600 key.pem
+          echo "🔹 Get AKS credentials"
+          az aks get-credentials \
+            --resource-group nassim-kube-mern \
+            --name mern-cluster \
+            --overwrite-existing
 
-      - name: Test SSH connection
-        run: |
-           ssh -o StrictHostKeyChecking=no -i key.pem azureuser@20.199.16.13 "echo '✅ Connexion SSH OK'"
+          echo "🔹 Deploy backend"
+          kubectl create deployment mern-backend --image=${{ secrets.DOCKER_USERNAME }}/mern-backend:latest --dry-run=client -o yaml | kubectl apply -f -
+          kubectl expose deployment mern-backend --type=ClusterIP --port=5000 --target-port=5000 --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: SSH deploy to Azure VM
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-           host: 20.199.16.13
-           username: azureuser
-           key_path: key.pem 
-           port: 22  
-           debug: true 
-           script: |
-             echo "✅ Connexion SSH réussie !"
-             docker ps 
-             echo "Login Docker"
-             echo "${{ secrets.DOCKER_PASSWORD }}" | sudo docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          echo "🔹 Deploy frontend"
+          kubectl create deployment mern-frontend --image=${{ secrets.DOCKER_USERNAME }}/mern-frontend:latest --dry-run=client -o yaml | kubectl apply -f -
+          kubectl expose deployment mern-frontend --type=LoadBalancer --port=80 --target-port=80 --dry-run=client -o yaml | kubectl apply -f -
 
-             echo "Pull latest Docker images"
-             docker pull ${{ secrets.DOCKER_USERNAME }}/mern-backend:latest
-             docker pull ${{ secrets.DOCKER_USERNAME }}/mern-frontend:latest
-
-              echo "Stop and remove old containers if exist"
-              docker rm -f mern-backend mern-frontend || true
-
-               echo "Run backend container"
-               docker run -d --name mern-backend \
-              -p 5000:5000 \
-              -e DATABASE_URL='${{ secrets.DATABASE_URL }}' \
-              -e JWT_SECRET='${{ secrets.JWT_SECRET }}' \
-              -e PORT='${{ secrets.PORT }}' \
-              -e FRONTEND_URL='${{ secrets.FRONTEND_URL }}' \
-              -e OPEN_AI_ENDPOINT='${{ secrets.OPEN_AI_ENDPOINT }}' \
-              -e OPEN_AI_KEY='${{ secrets.OPEN_AI_KEY }}' \
-              -e SEARCH_ENDPOINT='${{ secrets.SEARCH_ENDPOINT }}' \
-              -e SEARCH_KEY='${{ secrets.SEARCH_KEY }}' \
-              -e INDEX_NAME='${{ secrets.INDEX_NAME }}' \
-              -e CHAT_MODEL='${{ secrets.CHAT_MODEL }}' \
-              -e EMBEDDING_MODEL='${{ secrets.EMBEDDING_MODEL }}' \
-               ${{ secrets.DOCKER_USERNAME }}/mern-backend:latest 
-
-
-               echo "Run frontend container"
-               docker run -d --name mern-frontend \
-              -p 3000:80 \
-               ${{ secrets.DOCKER_USERNAME }}/mern-frontend:latest 
-   
+          echo "✅ Waiting for external IP..."
+          kubectl get service mern-frontend --watch
