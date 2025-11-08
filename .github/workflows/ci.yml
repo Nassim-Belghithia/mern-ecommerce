@@ -101,26 +101,29 @@ jobs:
     - name: Set up Azure CLI
       uses: azure/CLI@v1
       with:
-        inlineScript: |
-          echo "🔹 Login to Azure"
-          az login --service-principal \
-            -u ${{ secrets.AZURE_CLIENT_ID }} \
-            -p ${{ secrets.AZURE_CLIENT_SECRET }} \
-            --tenant ${{ secrets.AZURE_TENANT_ID }}
+       inlineScript: |
+        echo "🔹 Login to Azure"
+        az login --service-principal \
+        -u ${{ secrets.AZURE_CLIENT_ID }} \
+        -p ${{ secrets.AZURE_CLIENT_SECRET }} \
+        --tenant ${{ secrets.AZURE_TENANT_ID }}
 
-          echo "🔹 Get AKS credentials"
-          az aks get-credentials \
-            --resource-group nassim-kube-mern \
-            --name mern-cluster \
-            --overwrite-existing
+        echo "🔹 Install kubectl"
+        az aks install-cli
 
-          echo "🔹 Deploy backend"
-          kubectl create deployment mern-backend --image=${{ secrets.DOCKER_USERNAME }}/mern-backend:latest --dry-run=client -o yaml | kubectl apply -f -
-          kubectl expose deployment mern-backend --type=ClusterIP --port=5000 --target-port=5000 --dry-run=client -o yaml | kubectl apply -f -
+        echo "🔹 Get AKS credentials"
+        az aks get-credentials \
+        --resource-group nassim-kube-mern \
+        --name mern-cluster \
+        --overwrite-existing
 
-          echo "🔹 Deploy frontend"
-          kubectl create deployment mern-frontend --image=${{ secrets.DOCKER_USERNAME }}/mern-frontend:latest --dry-run=client -o yaml | kubectl apply -f -
-          kubectl expose deployment mern-frontend --type=LoadBalancer --port=80 --target-port=80 --dry-run=client -o yaml | kubectl apply -f -
+         echo "🔹 Deploy backend"
+        kubectl create deployment mern-backend --image=${{ secrets.DOCKER_USERNAME }}/mern-backend:latest --dry-run=client -o yaml | kubectl apply -f -
+        kubectl expose deployment mern-backend --type=ClusterIP --port=5000 --target-port=5000 --dry-run=client -o yaml | kubectl apply -f -
 
-          echo "✅ Waiting for external IP..."
-          kubectl get service mern-frontend --watch
+        echo "🔹 Deploy frontend"
+        kubectl create deployment mern-frontend --image=${{ secrets.DOCKER_USERNAME }}/mern-frontend:latest --dry-run=client -o yaml | kubectl apply -f -
+        kubectl expose deployment mern-frontend --type=LoadBalancer --port=80 --target-port=80 --dry-run=client -o yaml | kubectl apply -f -
+
+        echo "✅ Waiting for external IP..."
+        kubectl get service mern-frontend --watch
