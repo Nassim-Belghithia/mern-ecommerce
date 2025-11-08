@@ -126,4 +126,4 @@ jobs:
         kubectl expose deployment mern-frontend --type=LoadBalancer --port=80 --target-port=80 --dry-run=client -o yaml | kubectl apply -f -
 
         echo "✅ Waiting for external IP..."
-        kubectl get service mern-frontend --watch
+        kubectl get service mern-frontend 
