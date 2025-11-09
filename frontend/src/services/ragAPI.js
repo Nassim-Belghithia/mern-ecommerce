@@ -1,7 +1,7 @@
 // src/services/ragAPI.js
 export const askRAG = async (query) => {
   try {
-    const response = await fetch("http://mern-backend:5000/api/ask", {
+    const response = await fetch("http://135.116.215.126:5000/api/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query }),
