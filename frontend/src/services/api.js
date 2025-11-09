@@ -1,4 +1,4 @@
-export const API_BASE_URL = process.env.REACT_APP_API_URL || "http://mern-backend:5000/api";
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://mern-backend:5000/api";
 
 // Get token from localStorage
 export const getToken = () => {

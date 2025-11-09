@@ -142,9 +142,10 @@ jobs:
 
         echo "🔹 Expose backend service"
         kubectl expose deployment mern-backend \
-          --type=ClusterIP \
-          --port=5000 --target-port=5000 \
-          --dry-run=client -o yaml | kubectl apply -f -
+        --type=LoadBalancer \
+        --name=mern-backend-lb \
+         --port=5000 --target-port=5000 \
+         --dry-run=client -o yaml | kubectl apply -f -
 
         echo "🔹 Deploy frontend"
         kubectl create deployment mern-frontend --image=${{ secrets.DOCKER_USERNAME }}/mern-frontend:latest --dry-run=client -o yaml | kubectl apply -f -
