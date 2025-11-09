@@ -147,13 +147,12 @@ jobs:
           --dry-run=client -o yaml | kubectl apply -f -
 
         echo "🔹 Deploy frontend"
-          kubectl create deployment mern-frontend \--image=${{ secrets.DOCKER_USERNAME }}/mern-frontend:latest \ --dry-run=client -o yaml | kubectl apply -f -
-          
-         
-          kubectl set env deployment/mern-frontend REACT_APP_API_URL="http://mern-backend:5000/api"
+        kubectl create deployment mern-frontend --image=${{ secrets.DOCKER_USERNAME }}/mern-frontend:latest --dry-run=client -o yaml | kubectl apply -f -
+        kubectl set env deployment/mern-frontend REACT_APP_API_URL="http://mern-backend:5000/api"
 
-          kubectl expose deployment mern-frontend \--type=LoadBalancer \--port=80 --target-port=80 \--dry-run=client -o yaml | kubectl apply -f -
-  
+
+        kubectl expose deployment mern-frontend --type=LoadBalancer --port=80 --target-port=80 --dry-run=client -o yaml | kubectl apply -f -
+
   
   
 
