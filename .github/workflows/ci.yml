@@ -118,18 +118,18 @@ jobs:
         --overwrite-existing
 
          echo "🔹 Create Kubernetes secret for backend environment variables"
-        kubectl create secret generic backend-secrets \
-          --from-literal=DATABASE_URL=${{ secrets.DATABASE_URL }} \
-          --from-literal=JWT_SECRET=${{ secrets.JWT_SECRET }} \
-          --from-literal=FRONTEND_URL=${{ secrets.FRONTEND_URL  }} \
-          --from-literal=OPEN_AI_ENDPOINT=${{ secrets.OPEN_AI_ENDPOINT }} \
-          --from-literal=OPEN_AI_KEY=${{ secrets.OPEN_AI_KEY }} \
-          --from-literal=SEARCH_ENDPOINT=${{  secrets.SEARCH_ENDPOINT }} \
-          --from-literal=SEARCH_KEY=${{ secrets.SEARCH_KEY }} \
-          --from-literal=INDEX_NAME=${{ secrets.INDEX_NAME }} \
-          --from-literal=CHAT_MODEL=${{ secrets.CHAT_MODEL }} \
-          --from-literal=EMBEDDING_MODEL=${{ secrets.EMBEDDING_MODEL}} \
-          --from-literal=PORT=5000\
+         kubectl create secret generic backend-secrets \
+          --from-literal=DATABASE_URL='${{ secrets.DATABASE_URL }}' \
+          --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
+          --from-literal=FRONTEND_URL='${{ secrets.FRONTEND_URL }}' \
+          --from-literal=OPEN_AI_ENDPOINT='${{ secrets.OPEN_AI_ENDPOINT }}' \
+          --from-literal=OPEN_AI_KEY='${{ secrets.OPEN_AI_KEY }}' \
+          --from-literal=SEARCH_ENDPOINT='${{ secrets.SEARCH_ENDPOINT }}' \
+          --from-literal=SEARCH_KEY='${{ secrets.SEARCH_KEY }}' \
+          --from-literal=INDEX_NAME='${{ secrets.INDEX_NAME }}' \
+          --from-literal=CHAT_MODEL='${{ secrets.CHAT_MODEL }}' \
+          --from-literal=EMBEDDING_MODEL='${{ secrets.EMBEDDING_MODEL }}' \
+          --from-literal=PORT='${{ secrets.PORT }}' \
           --dry-run=client -o yaml | kubectl apply -f -
 
         echo "🔹 Deploy backend"
