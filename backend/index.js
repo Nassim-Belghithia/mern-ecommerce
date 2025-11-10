@@ -15,11 +15,30 @@ const database = mongoose.connection;
 
 const app = express();
 
-// Middleware
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true
-}));
+// Middleware CORS - Accepter les requêtes depuis n'importe quelle origine en production
+// Pour la sécurité, vous pouvez restreindre à des domaines spécifiques
+const corsOptions = {
+  origin: function (origin, callback) {
+    // En développement, accepter localhost
+    if (!origin || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      return callback(null, true);
+    }
+    // En production, accepter toutes les origines (ou spécifier les domaines autorisés)
+    // Pour plus de sécurité, décommenter et spécifier les domaines:
+    // const allowedOrigins = process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : [];
+    // if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+    //   callback(null, true);
+    // } else {
+    //   callback(new Error('Not allowed by CORS'));
+    // }
+    callback(null, true);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

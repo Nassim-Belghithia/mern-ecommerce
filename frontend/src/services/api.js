@@ -1,4 +1,14 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://135.116.215.126:5000/api";
+// Récupérer l'URL API depuis la configuration runtime ou fallback
+const getApiBaseUrl = () => {
+  // Vérifier si la configuration runtime est disponible (production)
+  if (typeof window !== 'undefined' && window.REACT_APP_CONFIG && window.REACT_APP_CONFIG.API_URL) {
+    return window.REACT_APP_CONFIG.API_URL;
+  }
+  // Fallback: variable d'environnement au build time (development)
+  return process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // Get token from localStorage
 export const getToken = () => {
